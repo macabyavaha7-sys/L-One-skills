@@ -169,6 +169,7 @@
     .skill-card,
     .workflow-card,
     .prompt-card,
+    .registry-note,
     .empty-card {
       border-radius: 18px;
       background: rgba(255,255,255,.78);
@@ -473,6 +474,7 @@
     }
     .workflow-card,
     .prompt-card,
+    .registry-note,
     .empty-card {
       padding: 15px;
     }
@@ -519,6 +521,13 @@
     }
     .prompt-row span {
       color: var(--muted);
+    }
+    .registry-note {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      padding: 14px 16px;
     }
     .modal-backdrop {
       position: fixed;
@@ -819,6 +828,7 @@
         avoid: ['只是一次性执行且没有复用价值。', '已经有明确命令且无需保存经验。'],
         links: ['video-download-skill', 'format-conversion-factory', '经验回写 Prompt'],
         quality: ['输出候选项目理由。', '明确主技能和辅助 Prompt。', '不得把多个技能堆进一个文件。'],
+        promptIds: ['01', '02', '04'],
         sources: [
           ['Agent Skills specification', 'https://github.com/agentskills/agentskills'],
           ['OpenAI Skills resource', 'https://academy.openai.com/public/resources/skills']
@@ -842,6 +852,7 @@
         avoid: ['没有下载权限的内容。', '只需要摘要而不是本地文件。'],
         links: ['format-conversion-factory', '视频下载规划 Prompt', '经验回写 Prompt'],
         quality: ['文件存在且大小合理。', '时长完整。', '清晰度符合要求。', '失败日志可回写。'],
+        promptIds: ['03', '04'],
         sources: [
           ['yt-dlp', 'https://github.com/yt-dlp/yt-dlp'],
           ['BBDown', 'https://github.com/nilaoda/BBDown'],
@@ -870,6 +881,7 @@
         avoid: ['目标格式不明确。', '未确认备份就覆盖原文件。'],
         links: ['video-download-skill', 'open-source-to-skill-library', '格式转换工厂 Prompt'],
         quality: ['先单样本验证。', '批处理要保留失败清单。', '输出文件可打开且格式正确。'],
+        promptIds: ['05', '04'],
         sources: [
           ['FFmpeg', 'https://github.com/FFmpeg/FFmpeg'],
           ['ImageMagick', 'https://github.com/ImageMagick/ImageMagick'],
@@ -895,6 +907,7 @@
         avoid: ['只是部署网站。', '需要大量产品重设计或从零重写。'],
         links: ['open-source-to-skill-library', '经验回写 Prompt'],
         quality: ['Web 本地版本先跑通。', '桌面 App 能启动。', '核心界面非空且主流程可用。'],
+        promptIds: ['02', '04'],
         sources: [
           ['Electron', 'https://github.com/electron/electron'],
           ['Tauri', 'https://github.com/tauri-apps/tauri']
@@ -911,7 +924,7 @@
     ];
 
     const categories = [
-      { id: 'dashboard', label: '总览', icon: 'dashboard', desc: '查看整个技能仓库的状态、统计、活跃度和推荐工作流。' },
+      { id: 'dashboard', label: '总览', icon: 'dashboard', desc: '查看整个技能仓库的状态、统计、活跃度和来源导航。' },
       { id: 'video', label: '视频下载', icon: 'video', desc: '视频链接、播放列表、直播流下载，以及下载后的格式处理。' },
       { id: 'article', label: '文章下载', icon: 'article', desc: '文章、网页、长文保存和结构化归档。当前暂无专属技能。' },
       { id: 'audio', label: '播客音频下载', icon: 'audio', desc: '播客、音频提取、音频格式转换和批处理。' },
@@ -921,6 +934,7 @@
       { id: 'image', label: '图片制作', icon: 'image', desc: '图片处理、格式转换、压缩、缩放和批处理。' },
       { id: 'movie', label: '视频制作', icon: 'movie', desc: '视频处理、转码、压缩、抽帧、抽音频和素材转换。' },
       { id: 'kb', label: '知识库管理', icon: 'kb', desc: '技能拆分、Prompt 保存、索引维护和经验回写。' },
+      { id: 'prompts', label: 'Prompt / AI 技巧', icon: 'write', desc: '集中查看可复用 Prompt 和 AI 技巧，需要时再进入具体技能弹窗关联使用。' },
       { id: 'audit', label: '审核检查', icon: 'audit', desc: '质量门槛、验证规则、输出检查和技能活跃度判断。' }
     ];
 
@@ -933,6 +947,7 @@
     function categorySkills(id) {
       if (id === 'dashboard') return skills;
       if (id === 'audit') return skills;
+      if (id === 'prompts') return [];
       return skills.filter(skill => skill.categories.includes(id));
     }
 
@@ -990,6 +1005,21 @@
 
     function renderSkills(cat, list) {
       const grid = document.getElementById('skillGrid');
+      if (cat.id === 'prompts') {
+        grid.innerHTML = prompts.map(([id, text]) => `
+          <div class="skill-card" style="cursor:default">
+            <div class="skill-top">
+              <span class="skill-icon">${iconSvg.write}</span>
+              <span class="skill-category-title">Prompt ${id}<small>AI 技巧</small></span>
+              <span class="rating">可复用</span>
+            </div>
+            <h3>${text}</h3>
+            <p>这是一个可复用的任务提示词，用于在相关技能执行前规划、执行中约束，或执行后回写经验。</p>
+            <div class="effect">使用方式：在对应任务或技能弹窗的“相关 Prompt”中按需调用。</div>
+          </div>
+        `).join('');
+        return;
+      }
       if (!list.length) {
         grid.innerHTML = `<div class="empty-card" style="grid-column:1/-1"><h2>暂无专属技能</h2><p style="color:var(--muted);margin:0">这个类目已经建立入口，但还没有独立技能。未来出现相关 skill 或 prompt 时，应优先归档到该类目并补齐星级、更新时间和质量门槛。</p></div>`;
         return;
@@ -1016,25 +1046,9 @@
     }
 
     function renderBottom(cat, list) {
-      const workflows = list.length ? `
-        <div class="workflow-card">
-          <h2>推荐工作流</h2>
-          <div class="flow"><div class="flow-box">选择主技能<br>${list[0].name}</div><div class="arrow">→</div><div class="flow-box">结果验证<br>质量门槛</div><div class="arrow">→</div><div class="flow-box">经验回写<br>Prompt 04</div></div>
-          <div class="flow"><div class="flow-box">需求拆解<br>open-source</div><div class="arrow">→</div><div class="flow-box">技能执行<br>当前类目</div><div class="arrow">→</div><div class="flow-box">更新注册表<br>星级/日期</div></div>
-        </div>
-      ` : `
-        <div class="workflow-card">
-          <h2>推荐工作流</h2>
-          <div class="flow"><div class="flow-box">发现需求</div><div class="arrow">→</div><div class="flow-box">open-source-to-skill-library</div><div class="arrow">→</div><div class="flow-box">创建新技能</div></div>
-        </div>
+      document.getElementById('bottomGrid').innerHTML = `
+        <div class="registry-note">所有技能仅作索引与学习路线整理，实际授权与下载请以原始仓库为准。</div>
       `;
-      const promptsHtml = `
-        <div class="prompt-card">
-          <h2>Prompt 支援</h2>
-          <div class="prompt-list">${prompts.map(([id, text]) => `<div class="prompt-row"><b>${id}</b><span>${text}</span></div>`).join('')}</div>
-        </div>
-      `;
-      document.getElementById('bottomGrid').innerHTML = workflows + promptsHtml;
     }
 
     function openModal(skill) {
@@ -1058,6 +1072,7 @@
         <div class="modal-section"><h3>适合任务</h3><ul>${skill.use.map(item => `<li>${item}</li>`).join('')}</ul></div>
         <div class="modal-section"><h3>避免误用</h3><ul>${skill.avoid.map(item => `<li>${item}</li>`).join('')}</ul></div>
         <div class="modal-section"><h3>联动技能</h3><ul>${skill.links.map(item => `<li>${item}</li>`).join('')}</ul></div>
+        <div class="modal-section"><h3>相关 Prompt</h3><div class="prompt-list">${prompts.filter(([id]) => skill.promptIds.includes(id)).map(([id, text]) => `<div class="prompt-row"><b>${id}</b><span>${text}</span></div>`).join('')}</div></div>
         <div class="modal-section"><h3>质量门槛</h3><ul>${skill.quality.map(item => `<li>${item}</li>`).join('')}</ul></div>
         <div class="modal-section">
           <h3>原始来源 / GitHub 链接</h3>
