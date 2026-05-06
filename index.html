@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>技能注册表</title>
+  <style>
+    :root {
+      --page: #d8d8d6;
+      --panel: #f6f6f3;
+      --card: #ffffff;
+      --ink: #181818;
+      --muted: #777;
+      --soft: #eeeeea;
+      --line: #e3e3de;
+      --dark: #474744;
+      --dark2: #333331;
+      --orange: #ef7655;
+      --orange2: #ff9c78;
+      --green: #3f9d75;
+      --blue: #5579d8;
+      --violet: #8066d9;
+      --red: #d85f5f;
+      --shadow: 0 20px 54px rgba(35, 35, 35, .16);
+      --soft-shadow: 0 10px 25px rgba(20, 20, 20, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 50%, rgba(255,255,255,.52), transparent 20%),
+        linear-gradient(135deg, #cfcfcd, #eeeeec 48%, #ccccca);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      line-height: 1.42;
+      overflow-x: hidden;
+    }
+    button {
+      font: inherit;
+      color: inherit;
+    }
+    .app {
+      width: min(1480px, calc(100vw - 24px));
+      min-height: calc(100vh - 40px);
+      margin: 20px auto;
+      display: grid;
+      grid-template-columns: clamp(108px, 10vw, 148px) minmax(0, 1fr);
+      gap: clamp(12px, 1.4vw, 18px);
+    }
+    .sidebar {
+      border-radius: 24px;
+      background: linear-gradient(180deg, #545452, #393937);
+      box-shadow: var(--shadow);
+      color: #fff;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: calc(100vh - 40px);
+      position: sticky;
+      top: 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 3px 4px 14px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .brand-mark {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--orange);
+      display: grid;
+      place-items: center;
+    }
+    .menu {
+      display: grid;
+      gap: 6px;
+    }
+    .menu button {
+      width: 100%;
+      border: 0;
+      border-radius: 13px;
+      background: transparent;
+      color: rgba(255,255,255,.72);
+      padding: 7px 8px;
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: center;
+      text-align: left;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .menu button:hover,
+    .menu button.active {
+      background: rgba(255,255,255,.12);
+      color: #fff;
+    }
+    .menu button.active .menu-icon {
+      background: #fff;
+      color: var(--orange);
+    }
+    .menu-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.15);
+    }
+    .menu-icon svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .side-card {
+      margin-top: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.11);
+      padding: 12px;
+      color: rgba(255,255,255,.76);
+      font-size: 11px;
+    }
+    .side-card b {
+      color: #fff;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .side-card span {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--dark2);
+      font-weight: 800;
+      font-size: 10px;
+    }
+    main {
+      border-radius: 24px;
+      border: 6px solid rgba(255,255,255,.78);
+      background: rgba(247,247,244,.94);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-width: 0;
+    }
+    .main-inner {
+      padding: clamp(16px, 2vw, 28px);
+    }
+    .top {
+      display: grid;
+      grid-template-columns: minmax(420px, 1fr) minmax(280px, 340px);
+      gap: clamp(12px, 1.5vw, 18px);
+      margin-bottom: 16px;
+    }
+    .hero-card,
+    .status-card,
+    .stat-card,
+    .skill-card,
+    .workflow-card,
+    .prompt-card,
+    .empty-card {
+      border-radius: 18px;
+      background: rgba(255,255,255,.78);
+      box-shadow: var(--soft-shadow);
+    }
+    .hero-card {
+      padding: 18px 20px;
+      min-height: 150px;
+      display: grid;
+      align-content: space-between;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 2.6vw, 36px);
+      line-height: 1;
+      letter-spacing: 0;
+      max-width: 760px;
+    }
+    .subtitle {
+      margin: 9px 0 0;
+      color: var(--muted);
+      max-width: 720px;
+      font-size: 14px;
+    }
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .hero-metric {
+      border-radius: 14px;
+      background: var(--soft);
+      padding: 12px 14px;
+      min-height: 92px;
+      border: 2px solid rgba(255,255,255,.72);
+    }
+    .hero-metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .hero-metric b {
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(34px, 4vw, 56px);
+      line-height: .9;
+      letter-spacing: -1px;
+    }
+    .status-card {
+      padding: 18px;
+      background:
+        radial-gradient(circle at 70% 0%, rgba(239,118,85,.24), transparent 28%),
+        rgba(255,255,255,.76);
+      display: grid;
+      gap: 12px;
+    }
+    .pill {
+      width: fit-content;
+      border-radius: 999px;
+      padding: 7px 12px;
+      color: #fff;
+      background: var(--orange);
+      font-weight: 800;
+      font-size: 11px;
+      box-shadow: 0 9px 18px rgba(239,118,85,.26);
+    }
+    .repo-line {
+      border-radius: 15px;
+      padding: 11px 12px;
+      background: rgba(255,255,255,.74);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .repo-line small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .donut-row {
+      display: grid;
+      grid-template-columns: 142px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+    .donut {
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      background: conic-gradient(var(--orange) 0 40%, var(--green) 40% 60%, var(--blue) 60% 80%, var(--violet) 80% 100%);
+      position: relative;
+      box-shadow: inset 0 0 0 10px rgba(255,255,255,.75);
+    }
+    .donut::after {
+      content: "";
+      position: absolute;
+      inset: 36px;
+      border-radius: 50%;
+      background: var(--panel);
+    }
+    .legend {
+      display: grid;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .legend i {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      background: var(--orange);
+    }
+    .legend i.green { background: var(--green); }
+    .legend i.blue { background: var(--blue); }
+    .legend i.violet { background: var(--violet); }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 12px 0 10px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .view-label {
+      border-radius: 999px;
+      background: var(--soft);
+      padding: 6px 11px;
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .stat-card {
+      padding: 14px;
+      min-height: 116px;
+      overflow: hidden;
+    }
+    .stat-card span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .stat-card b {
+      display: block;
+      font-size: 26px;
+      margin: 6px 0;
+    }
+    .bars {
+      display: flex;
+      align-items: end;
+      gap: 5px;
+      height: 46px;
+      margin-top: 8px;
+    }
+    .bars i {
+      width: 7px;
+      border-radius: 999px 999px 0 0;
+      background: #e2e2de;
+    }
+    .bars i.active {
+      background: var(--ink);
+    }
+    .line-chart {
+      width: 100%;
+      height: 50px;
+      margin-top: 6px;
+    }
+    .line-chart path {
+      fill: none;
+      stroke: var(--orange);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+    }
+    .skill-card {
+      border: 0;
+      text-align: left;
+      padding: 15px;
+      min-height: 214px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .skill-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(20,20,20,.11);
+    }
+    .skill-top {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+    }
+    .skill-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #f0f0ec;
+      display: grid;
+      place-items: center;
+      box-shadow: inset 0 0 0 5px #fff;
+      flex: 0 0 auto;
+    }
+    .skill-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--ink);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .rating {
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: #fff;
+      background: var(--orange);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .skill-category-title {
+      min-width: 0;
+      font-size: clamp(15px, 1.55vw, 22px);
+      line-height: 1.05;
+      font-weight: 900;
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+    .skill-category-title small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .skill-card h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+    .skill-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .effect {
+      border-radius: 13px;
+      background: var(--soft);
+      padding: 9px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .skill-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-top: auto;
+    }
+    .mini-meta {
+      border-radius: 12px;
+      background: #f2f2ee;
+      padding: 8px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .mini-meta b {
+      display: block;
+      color: var(--ink);
+      margin-top: 2px;
+      font-size: 12px;
+    }
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: minmax(380px, 1.3fr) minmax(280px, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .workflow-card,
+    .prompt-card,
+    .empty-card {
+      padding: 15px;
+    }
+    .workflow-card h2,
+    .prompt-card h2,
+    .empty-card h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 9px;
+    }
+    .flow-box {
+      border-radius: 12px;
+      background: var(--soft);
+      padding: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      min-height: 46px;
+    }
+    .arrow {
+      color: var(--orange);
+      font-weight: 900;
+    }
+    .prompt-list {
+      display: grid;
+      gap: 8px;
+    }
+    .prompt-row {
+      border-radius: 12px;
+      background: var(--soft);
+      padding: 9px 10px;
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      gap: 8px;
+      font-size: 11px;
+    }
+    .prompt-row b {
+      color: var(--ink);
+    }
+    .prompt-row span {
+      color: var(--muted);
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(25,25,24,.48);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 20;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal {
+      width: min(720px, 100%);
+      max-height: min(760px, calc(100vh - 48px));
+      overflow: auto;
+      border-radius: 24px;
+      background: var(--panel);
+      border: 6px solid rgba(255,255,255,.76);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .modal-head {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 14px;
+    }
+    .close {
+      border: 0;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      background: var(--dark);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 900;
+    }
+    .modal h2 {
+      margin: 0;
+      font-size: 22px;
+      overflow-wrap: anywhere;
+    }
+    .modal .sub {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+      margin: 14px 0;
+    }
+    .modal-stat {
+      border-radius: 14px;
+      background: #fff;
+      padding: 10px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .modal-stat b {
+      display: block;
+      color: var(--ink);
+      margin-top: 4px;
+      font-size: 16px;
+    }
+    .modal-section {
+      border-radius: 16px;
+      background: #fff;
+      padding: 13px;
+      margin-top: 10px;
+    }
+    .modal-section h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+    .modal-section ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #444;
+      font-size: 13px;
+    }
+    .stars {
+      color: var(--orange);
+      letter-spacing: 1px;
+      font-weight: 900;
+    }
+    @media (min-width: 1320px) {
+      .skill-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 1180px) {
+      .app {
+        grid-template-columns: 112px minmax(0, 1fr);
+      }
+      .top {
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
+      }
+      .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 920px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        min-height: auto;
+        position: static;
+        padding: 12px;
+      }
+      .brand {
+        padding-bottom: 10px;
+      }
+      .menu {
+        grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+      }
+      .side-card {
+        display: none;
+      }
+      .top,
+      .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 680px) {
+      .app {
+        width: calc(100vw - 12px);
+        margin: 6px auto;
+        gap: 8px;
+      }
+      .main-inner {
+        padding: 12px;
+      }
+      main,
+      .sidebar {
+        border-radius: 18px;
+      }
+      h1 {
+        font-size: clamp(28px, 9vw, 34px);
+      }
+      .hero-card,
+      .status-card,
+      .stat-card,
+      .skill-card,
+      .workflow-card,
+      .prompt-card,
+      .empty-card {
+        border-radius: 15px;
+      }
+      .hero-metrics,
+      .modal-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .hero-metrics {
+        grid-template-columns: 1fr;
+      }
+      .donut-row {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+      .menu {
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+      }
+      .menu button {
+        font-size: 11px;
+        padding: 7px;
+      }
+      .flow {
+        grid-template-columns: 1fr;
+      }
+      .arrow {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div>
+        <div class="brand"><span class="brand-mark">✦</span><span>技能库管</span></div>
+        <nav class="menu" id="menu"></nav>
+      </div>
+      <div class="side-card">
+        <b>调度原则</b>
+        先判断类目，再选择主技能；复杂任务需要后处理和经验回写。
+        <span>Registry active</span>
+      </div>
+    </aside>
+
+    <main>
+      <div class="main-inner">
+        <section class="top">
+          <div class="hero-card">
+            <div>
+              <h1 id="pageTitle">技能注册表</h1>
+              <p class="subtitle" id="pageDesc">用分类菜单直接进入子页面，查看对应技能、统计、状态和工作流。</p>
+            </div>
+            <div class="hero-metrics" id="heroMetrics"></div>
+          </div>
+          <div class="status-card">
+            <span class="pill">Repository Status</span>
+            <div class="repo-line" id="repoLine">技能库正在读取状态<small>Local HTML registry</small></div>
+            <div class="donut-row">
+              <div class="donut" id="donut"></div>
+              <div class="legend" id="legend"></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="section-head">
+          <div>
+            <h2 id="sectionTitle">总览</h2>
+            <p id="sectionSub">仓库核心状态与当前类目统计。</p>
+          </div>
+          <span class="view-label" id="viewLabel">Dashboard</span>
+        </div>
+
+        <section class="stat-grid" id="statGrid"></section>
+        <section class="skill-grid" id="skillGrid"></section>
+        <section class="bottom-grid" id="bottomGrid"></section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+    <div class="modal" id="modal"></div>
+  </div>
+
+  <script>
+    const iconSvg = {
+      dashboard: '<svg viewBox="0 0 24 24"><path d="M4 13l8-8 8 8"/><path d="M6 11v8h12v-8"/></svg>',
+      video: '<svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>',
+      article: '<svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h6"/></svg>',
+      audio: '<svg viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
+      analysis: '<svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16l3-5 3 3 4-8"/></svg>',
+      web: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 20h8"/></svg>',
+      write: '<svg viewBox="0 0 24 24"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4z"/><path d="M13 6l3 3"/></svg>',
+      image: '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M7 16l3-3 2 2 3-4 3 5"/></svg>',
+      movie: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14M3 10h18"/></svg>',
+      kb: '<svg viewBox="0 0 24 24"><path d="M5 5h11a3 3 0 013 3v11H8a3 3 0 01-3-3z"/><path d="M8 9h7M8 13h5"/></svg>',
+      audit: '<svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V7l7-4z"/><path d="M9 12l2 2 4-5"/></svg>',
+      compass: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M15 9l-2 5-5 2 2-5 5-2z"/></svg>',
+      swap: '<svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 013-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 01-3 3H3"/></svg>'
+    };
+
+    const skills = [
+      {
+        id: 'open-source-to-skill-library',
+        name: 'open-source-to-skill-library',
+        icon: 'compass',
+        categories: ['dashboard', 'analysis', 'kb'],
+        primaryCategory: '分析封装',
+        grade: 'S',
+        localStars: 5,
+        githubStars: '待同步',
+        updated: '2026-05-06',
+        activity: '活跃',
+        title: '开源项目封装为技能库',
+        effect: '项目筛选、技能拆分、Prompt 独立保存、经验回写框架。',
+        summary: '把自然语言需求或仓库链接转成可复用 Skill / Scale。',
+        use: ['用户有目标但不知道该用什么开源项目。', '用户提供 GitHub 仓库，希望封装为长期可用技能。', '复杂任务需要先规划技能链路。'],
+        avoid: ['只是一次性执行且没有复用价值。', '已经有明确命令且无需保存经验。'],
+        links: ['video-download-skill', 'format-conversion-factory', '经验回写 Prompt'],
+        quality: ['输出候选项目理由。', '明确主技能和辅助 Prompt。', '不得把多个技能堆进一个文件。']
+      },
+      {
+        id: 'video-download-skill',
+        name: 'video-download-skill',
+        icon: 'video',
+        categories: ['dashboard', 'video', 'movie'],
+        primaryCategory: '视频下载',
+        grade: 'A',
+        localStars: 4,
+        githubStars: '待同步',
+        updated: '2026-05-06',
+        activity: '活跃',
+        title: '视频下载技能',
+        effect: '根据链接选择下载工具、质量、输出目录、命名、Cookie 和失败重试。',
+        summary: '下载 YouTube、Bilibili、m3u8/mpd、直播流和常见在线视频。',
+        use: ['用户提供视频、播放列表或直播流链接。', '需要字幕、封面、元数据或指定清晰度。', '下载失败需要处理 Cookie、代理或格式选择。'],
+        avoid: ['没有下载权限的内容。', '只需要摘要而不是本地文件。'],
+        links: ['format-conversion-factory', '视频下载规划 Prompt', '经验回写 Prompt'],
+        quality: ['文件存在且大小合理。', '时长完整。', '清晰度符合要求。', '失败日志可回写。']
+      },
+      {
+        id: 'format-conversion-factory',
+        name: 'format-conversion-factory',
+        icon: 'swap',
+        categories: ['dashboard', 'video', 'audio', 'image', 'movie'],
+        primaryCategory: '格式转换',
+        grade: 'A',
+        localStars: 4,
+        githubStars: '待同步',
+        updated: '2026-05-06',
+        activity: '活跃',
+        title: '格式转换工厂',
+        effect: '用 FFmpeg、ImageMagick、SoX、Assimp 处理转换和批处理。',
+        summary: '把输入文件或目录转换成目标格式，并沉淀稳定参数。',
+        use: ['视频转码、压缩、抽音频、抽帧。', '图片批量转换、压缩、缩放。', '音频采样率、声道、格式调整。', '3D 资产格式转换。'],
+        avoid: ['目标格式不明确。', '未确认备份就覆盖原文件。'],
+        links: ['video-download-skill', 'open-source-to-skill-library', '格式转换工厂 Prompt'],
+        quality: ['先单样本验证。', '批处理要保留失败清单。', '输出文件可打开且格式正确。']
+      },
+      {
+        id: 'web-project-to-desktop-app',
+        name: 'web-project-to-desktop-app',
+        icon: 'web',
+        categories: ['dashboard', 'web'],
+        primaryCategory: '网页制作',
+        grade: 'B+',
+        localStars: 4,
+        githubStars: '待同步',
+        updated: '2026-05-06',
+        activity: '活跃',
+        title: '网页项目封装为桌面 App',
+        effect: '识别 Web 项目类型、依赖、构建命令、桌面壳和打包产物。',
+        summary: '把 Web 项目或网页工具封装成本地桌面应用。',
+        use: ['Web 项目已经存在，希望做成本地桌面应用。', '需要沉淀 Node、端口、环境变量、构建和打包经验。'],
+        avoid: ['只是部署网站。', '需要大量产品重设计或从零重写。'],
+        links: ['open-source-to-skill-library', '经验回写 Prompt'],
+        quality: ['Web 本地版本先跑通。', '桌面 App 能启动。', '核心界面非空且主流程可用。']
+      }
+    ];
+
+    const prompts = [
+      ['01', '按需求寻找开源项目'],
+      ['02', '把 GitHub 仓库封装成技能'],
+      ['03', '规划视频下载默认规则'],
+      ['04', '把首次运行经验写回技能'],
+      ['05', '创建格式转换工厂技能']
+    ];
+
+    const categories = [
+      { id: 'dashboard', label: '总览', icon: 'dashboard', desc: '查看整个技能仓库的状态、统计、活跃度和推荐工作流。' },
+      { id: 'video', label: '视频下载', icon: 'video', desc: '视频链接、播放列表、直播流下载，以及下载后的格式处理。' },
+      { id: 'article', label: '文章下载', icon: 'article', desc: '文章、网页、长文保存和结构化归档。当前暂无专属技能。' },
+      { id: 'audio', label: '播客音频下载', icon: 'audio', desc: '播客、音频提取、音频格式转换和批处理。' },
+      { id: 'analysis', label: '分析', icon: 'analysis', desc: '需求拆解、开源项目筛选、技能化判断和任务路由。' },
+      { id: 'web', label: '网页制作', icon: 'web', desc: 'Web 项目封装、桌面化、构建和运行经验沉淀。' },
+      { id: 'write', label: '写作', icon: 'write', desc: '写作、改写、文案与结构化输出。当前暂无专属技能。' },
+      { id: 'image', label: '图片制作', icon: 'image', desc: '图片处理、格式转换、压缩、缩放和批处理。' },
+      { id: 'movie', label: '视频制作', icon: 'movie', desc: '视频处理、转码、压缩、抽帧、抽音频和素材转换。' },
+      { id: 'kb', label: '知识库管理', icon: 'kb', desc: '技能拆分、Prompt 保存、索引维护和经验回写。' },
+      { id: 'audit', label: '审核检查', icon: 'audit', desc: '质量门槛、验证规则、输出检查和技能活跃度判断。' }
+    ];
+
+    let currentCategory = 'dashboard';
+
+    function stars(n) {
+      return '★'.repeat(n) + '☆'.repeat(5 - n);
+    }
+
+    function categorySkills(id) {
+      if (id === 'dashboard') return skills;
+      if (id === 'audit') return skills;
+      return skills.filter(skill => skill.categories.includes(id));
+    }
+
+    function renderMenu() {
+      const menu = document.getElementById('menu');
+      menu.innerHTML = categories.map(cat => `
+        <button class="${cat.id === currentCategory ? 'active' : ''}" data-category="${cat.id}">
+          <span class="menu-icon">${iconSvg[cat.icon]}</span>
+          <span>${cat.label}</span>
+        </button>
+      `).join('');
+      menu.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentCategory = btn.dataset.category;
+          render();
+        });
+      });
+    }
+
+    function renderHero(cat, list) {
+      document.getElementById('pageTitle').textContent = cat.id === 'dashboard' ? '技能注册表' : cat.label;
+      document.getElementById('pageDesc').textContent = cat.desc;
+      document.getElementById('viewLabel').textContent = cat.label;
+      document.getElementById('sectionTitle').textContent = cat.id === 'dashboard' ? '仓库状态' : `${cat.label}子页面`;
+      document.getElementById('sectionSub').textContent = cat.id === 'dashboard' ? '总技能数量、活跃度、分类比例和最近更新。' : '该类目下的技能、数据统计和可用工作流。';
+
+      const active = list.filter(skill => skill.activity === '活跃').length;
+      document.getElementById('heroMetrics').innerHTML = [
+        ['技能数量', list.length],
+        ['活跃技能', active],
+        ['Prompt', prompts.length]
+      ].map(([label, value]) => `<div class="hero-metric"><span>${label}</span><b>${value}</b></div>`).join('');
+
+      document.getElementById('repoLine').innerHTML = `${cat.label}：${list.length} 个技能<small>最近更新：2026-05-06 · GitHub 星数待同步</small>`;
+      document.getElementById('legend').innerHTML = `
+        <span><i></i>发现封装 ${categorySkills('analysis').length}</span>
+        <span><i class="green"></i>媒体获取 ${categorySkills('video').length}</span>
+        <span><i class="blue"></i>格式处理 ${categorySkills('movie').length}</span>
+        <span><i class="violet"></i>应用封装 ${categorySkills('web').length}</span>
+      `;
+    }
+
+    function renderStats(list) {
+      const active = list.filter(skill => skill.activity === '活跃').length;
+      const maxStars = list.length ? Math.max(...list.map(skill => skill.localStars)) : 0;
+      const latest = list.length ? list.map(skill => skill.updated).sort().reverse()[0] : '暂无';
+      const sourceSynced = list.filter(skill => skill.githubStars !== '待同步').length;
+      document.getElementById('statGrid').innerHTML = `
+        <div class="stat-card"><span>总技能数量</span><b>${list.length}</b><div class="bars"><i style="height:22%"></i><i style="height:40%"></i><i class="active" style="height:${Math.max(22, list.length * 18)}%"></i><i style="height:56%"></i><i style="height:34%"></i></div></div>
+        <div class="stat-card"><span>活跃技能</span><b>${active}/${list.length || 0}</b><svg class="line-chart" viewBox="0 0 180 60"><path d="M6 42 L34 26 L62 30 L90 18 L118 25 L146 12 L174 20"/></svg></div>
+        <div class="stat-card"><span>最高认可星级</span><b>${maxStars}/5</b><div class="stars">${stars(maxStars)}</div></div>
+        <div class="stat-card"><span>最近更新日期</span><b style="font-size:20px">${latest}</b><span>GitHub 星数已同步 ${sourceSynced}/${list.length || 0}</span></div>
+      `;
+    }
+
+    function renderSkills(cat, list) {
+      const grid = document.getElementById('skillGrid');
+      if (!list.length) {
+        grid.innerHTML = `<div class="empty-card" style="grid-column:1/-1"><h2>暂无专属技能</h2><p style="color:var(--muted);margin:0">这个类目已经建立入口，但还没有独立技能。未来出现相关 skill 或 prompt 时，应优先归档到该类目并补齐星级、更新时间和质量门槛。</p></div>`;
+        return;
+      }
+      grid.innerHTML = list.map(skill => `
+        <button class="skill-card" data-skill="${skill.id}">
+          <div class="skill-top">
+            <span class="skill-icon">${iconSvg[skill.icon]}</span>
+            <span class="skill-category-title">${skill.primaryCategory}<small>技能类目</small></span>
+            <span class="rating">${stars(skill.localStars)}</span>
+          </div>
+          <h3>${skill.name}</h3>
+          <p>${skill.summary}</p>
+          <div class="effect">主效果：${skill.effect}</div>
+          <div class="skill-meta">
+            <div class="mini-meta">GitHub 星数<b>${skill.githubStars}</b></div>
+            <div class="mini-meta">最近更新<b>${skill.updated}</b></div>
+          </div>
+        </button>
+      `).join('');
+      grid.querySelectorAll('.skill-card').forEach(card => {
+        card.addEventListener('click', () => openModal(skills.find(skill => skill.id === card.dataset.skill)));
+      });
+    }
+
+    function renderBottom(cat, list) {
+      const workflows = list.length ? `
+        <div class="workflow-card">
+          <h2>推荐工作流</h2>
+          <div class="flow"><div class="flow-box">选择主技能<br>${list[0].name}</div><div class="arrow">→</div><div class="flow-box">结果验证<br>质量门槛</div><div class="arrow">→</div><div class="flow-box">经验回写<br>Prompt 04</div></div>
+          <div class="flow"><div class="flow-box">需求拆解<br>open-source</div><div class="arrow">→</div><div class="flow-box">技能执行<br>当前类目</div><div class="arrow">→</div><div class="flow-box">更新注册表<br>星级/日期</div></div>
+        </div>
+      ` : `
+        <div class="workflow-card">
+          <h2>推荐工作流</h2>
+          <div class="flow"><div class="flow-box">发现需求</div><div class="arrow">→</div><div class="flow-box">open-source-to-skill-library</div><div class="arrow">→</div><div class="flow-box">创建新技能</div></div>
+        </div>
+      `;
+      const promptsHtml = `
+        <div class="prompt-card">
+          <h2>Prompt 支援</h2>
+          <div class="prompt-list">${prompts.map(([id, text]) => `<div class="prompt-row"><b>${id}</b><span>${text}</span></div>`).join('')}</div>
+        </div>
+      `;
+      document.getElementById('bottomGrid').innerHTML = workflows + promptsHtml;
+    }
+
+    function openModal(skill) {
+      const modal = document.getElementById('modal');
+      modal.innerHTML = `
+        <div class="modal-head">
+          <span class="skill-icon">${iconSvg[skill.icon]}</span>
+          <div>
+            <h2>${skill.name}</h2>
+            <p class="sub">${skill.title}</p>
+          </div>
+          <button class="close" id="closeModal">×</button>
+        </div>
+        <div class="modal-grid">
+          <div class="modal-stat">认可星级<b class="stars">${stars(skill.localStars)}</b></div>
+          <div class="modal-stat">GitHub 星数<b>${skill.githubStars}</b></div>
+          <div class="modal-stat">最近更新<b>${skill.updated}</b></div>
+          <div class="modal-stat">状态<b>${skill.activity}</b></div>
+        </div>
+        <div class="modal-section"><h3>主效果</h3><ul><li>${skill.effect}</li></ul></div>
+        <div class="modal-section"><h3>适合任务</h3><ul>${skill.use.map(item => `<li>${item}</li>`).join('')}</ul></div>
+        <div class="modal-section"><h3>避免误用</h3><ul>${skill.avoid.map(item => `<li>${item}</li>`).join('')}</ul></div>
+        <div class="modal-section"><h3>联动技能</h3><ul>${skill.links.map(item => `<li>${item}</li>`).join('')}</ul></div>
+        <div class="modal-section"><h3>质量门槛</h3><ul>${skill.quality.map(item => `<li>${item}</li>`).join('')}</ul></div>
+      `;
+      document.getElementById('modalBackdrop').classList.add('open');
+      document.getElementById('closeModal').addEventListener('click', closeModal);
+    }
+
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.remove('open');
+    }
+
+    document.getElementById('modalBackdrop').addEventListener('click', event => {
+      if (event.target.id === 'modalBackdrop') closeModal();
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeModal();
+    });
+
+    function render() {
+      const cat = categories.find(item => item.id === currentCategory);
+      const list = categorySkills(currentCategory);
+      renderMenu();
+      renderHero(cat, list);
+      renderStats(list);
+      renderSkills(cat, list);
+      renderBottom(cat, list);
+    }
+
+    render();
+  </script>
+</body>
+</html>
