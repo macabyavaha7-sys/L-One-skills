@@ -651,6 +651,33 @@
       color: var(--muted);
       font-size: 12px;
     }
+    .one-line {
+      border-left: 5px solid var(--orange);
+      background: #fff7f3;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .recommend-list {
+      display: grid;
+      gap: 8px;
+    }
+    .recommend-item {
+      border-radius: 13px;
+      background: var(--soft);
+      padding: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      display: grid;
+      gap: 4px;
+      font-size: 12px;
+    }
+    .recommend-item b {
+      font-size: 12px;
+    }
+    .recommend-item span {
+      color: var(--muted);
+    }
     .stars {
       color: var(--orange);
       letter-spacing: 1px;
@@ -827,10 +854,11 @@
         primaryCategory: '分析封装',
         grade: 'S',
         localStars: 5,
-        githubStars: '17,960',
+        githubStars: '17,964',
         updated: '2026-05-06',
         activity: '活跃',
         title: '开源项目封装为技能库',
+        oneLine: '把“我想做某件事”变成可复用的技能：先找项目，再封装流程、Prompt、依赖和经验回写。',
         effect: '项目筛选、技能拆分、Prompt 独立保存、经验回写框架。',
         summary: '把自然语言需求或仓库链接转成可复用 Skill / Scale。',
         use: ['用户有目标但不知道该用什么开源项目。', '用户提供 GitHub 仓库，希望封装为长期可用技能。', '复杂任务需要先规划技能链路。'],
@@ -839,8 +867,14 @@
         quality: ['输出候选项目理由。', '明确主技能和辅助 Prompt。', '不得把多个技能堆进一个文件。'],
         promptIds: ['01', '02', '04'],
         sources: [
-          ['Agent Skills specification', 'https://github.com/agentskills/agentskills', '17,960'],
+          ['Agent Skills specification', 'https://github.com/agentskills/agentskills', '17,964'],
           ['OpenAI Skills resource', 'https://academy.openai.com/public/resources/skills', '官方资源']
+        ],
+        recommendations: [
+          ['Agent Skills 规范', '把 SKILL.md 定义成可发现、可触发的能力包，适合做跨 Agent 的技能标准。', 'https://openagentskills.dev/docs/specification'],
+          ['OpenAI Academy Skills', '强调把已有工作流程变成可重复执行的技能，减少反复解释步骤。', 'https://academy.openai.com/public/resources/skills'],
+          ['Anthropic Skills 规范概览', '把技能描述为包含说明、脚本和资源的可复用能力模块。', 'https://www.mintlify.com/anthropics/skills/spec/overview'],
+          ['Agentic Software Development 课程', '把 Agent Skills 作为多平台可采用的开放格式来讲解。', 'https://courses.taltech.akaver.com/agentic-software-development/lectures/skills']
         ]
       },
       {
@@ -851,10 +885,11 @@
         primaryCategory: '视频下载',
         grade: 'A',
         localStars: 4,
-        githubStars: '295,480',
+        githubStars: '295,482',
         updated: '2026-05-06',
         activity: '活跃',
         title: '视频下载技能',
+        oneLine: '给一个视频、播放列表或直播流链接，自动选择下载工具、质量、命名、认证和失败重试策略。',
         effect: '根据链接选择下载工具、质量、输出目录、命名、Cookie 和失败重试。',
         summary: '下载 YouTube、Bilibili、m3u8/mpd、直播流和常见在线视频。',
         use: ['用户提供视频、播放列表或直播流链接。', '需要字幕、封面、元数据或指定清晰度。', '下载失败需要处理 Cookie、代理或格式选择。'],
@@ -863,13 +898,20 @@
         quality: ['文件存在且大小合理。', '时长完整。', '清晰度符合要求。', '失败日志可回写。'],
         promptIds: ['03', '04'],
         sources: [
-          ['yt-dlp', 'https://github.com/yt-dlp/yt-dlp', '160,727'],
-          ['BBDown', 'https://github.com/nilaoda/BBDown', '13,822'],
+          ['yt-dlp', 'https://github.com/yt-dlp/yt-dlp', '160,728'],
+          ['BBDown', 'https://github.com/nilaoda/BBDown', '13,823'],
           ['N_m3u8DL-RE', 'https://github.com/nilaoda/N_m3u8DL-RE', '7,871'],
           ['Streamlink', 'https://github.com/streamlink/streamlink', '11,443'],
           ['MeTube', 'https://github.com/alexta69/metube', '13,446'],
           ['Lux', 'https://github.com/iawia002/lux', '31,318'],
           ['you-get', 'https://github.com/soimort/you-get', '56,853']
+        ],
+        recommendations: [
+          ['yt-dlp GitHub', '项目自述强调它是支持数千站点、功能丰富的音视频下载器，是本技能主工具。', 'https://github.com/yt-dlp/yt-dlp'],
+          ['yt-dlp 安装/Release', '官方 README 给出 Windows、macOS、Linux 推荐二进制，方便普通用户落地。', 'https://github.com/yt-dlp/yt-dlp#release-files'],
+          ['VideoProc 社区教程', '社区教程把 yt-dlp 用在单视频、字幕、分辨率选择和自动化工作流。', 'https://www.reddit.com/r/VideoProc/comments/1owl0el'],
+          ['youtube-dl 背景资料', '长期作为下载工具生态代表，说明此类命令行下载器有广泛使用基础。', 'https://en.wikipedia.org/wiki/Youtube-dl'],
+          ['yt-dlp GUI 社区讨论', '社区常把 GUI 包装建立在 yt-dlp 之上，说明核心能力适合被封装成技能。', 'https://www.reddit.com/r/youtubedl/comments/1qgvw3p']
         ]
       },
       {
@@ -880,10 +922,11 @@
         primaryCategory: '格式转换',
         grade: 'A',
         localStars: 4,
-        githubStars: '89,792',
+        githubStars: '89,793',
         updated: '2026-05-06',
         activity: '活跃',
         title: '格式转换工厂',
+        oneLine: '把视频、音频、图片或 3D 文件转换成目标格式，并沉淀可复用命令和质量参数。',
         effect: '用 FFmpeg、ImageMagick、SoX、Assimp 处理转换和批处理。',
         summary: '把输入文件或目录转换成目标格式，并沉淀稳定参数。',
         use: ['视频转码、压缩、抽音频、抽帧。', '图片批量转换、压缩、缩放。', '音频采样率、声道、格式调整。', '3D 资产格式转换。'],
@@ -892,10 +935,17 @@
         quality: ['先单样本验证。', '批处理要保留失败清单。', '输出文件可打开且格式正确。'],
         promptIds: ['05', '04'],
         sources: [
-          ['FFmpeg', 'https://github.com/FFmpeg/FFmpeg', '59,608'],
+          ['FFmpeg', 'https://github.com/FFmpeg/FFmpeg', '59,609'],
           ['ImageMagick', 'https://github.com/ImageMagick/ImageMagick', '16,349'],
           ['SoX', 'https://github.com/chirlu/sox', '919'],
           ['Assimp', 'https://github.com/assimp/assimp', '12,916']
+        ],
+        recommendations: [
+          ['FFmpeg 官方首页', '官方定位是跨平台录制、转换和流式处理音视频的完整方案。', 'https://ffmpeg.org/'],
+          ['Meta Engineering', 'Meta 把 FFmpeg 称为媒体处理多工具，并用于大规模视频处理链路。', 'https://engineering.fb.com/2026/03/02/video-engineering/ffmpeg-at-meta-media-processing-at-scale/'],
+          ['FFmpeg 背景资料', '资料总结其广泛用于转码、剪辑、缩放、后期效果和标准合规。', 'https://en.wikipedia.org/wiki/FFmpeg'],
+          ['Intel FFmpeg Solution Brief', '产业资料把 FFmpeg 归纳为跨平台录制、转换和流式处理工具。', 'https://cdrdv2-public.intel.com/772945/ffmpeg-v05.pdf'],
+          ['ImageMagick GitHub', 'ImageMagick 是图片转换处理的核心来源，适合承担图片批处理分支。', 'https://github.com/ImageMagick/ImageMagick']
         ]
       },
       {
@@ -910,6 +960,7 @@
         updated: '2026-05-06',
         activity: '活跃',
         title: '网页项目封装为桌面 App',
+        oneLine: '把已有 Web 项目跑通后封装成桌面应用，记录依赖、构建、打包和启动验证路径。',
         effect: '识别 Web 项目类型、依赖、构建命令、桌面壳和打包产物。',
         summary: '把 Web 项目或网页工具封装成本地桌面应用。',
         use: ['Web 项目已经存在，希望做成本地桌面应用。', '需要沉淀 Node、端口、环境变量、构建和打包经验。'],
@@ -920,6 +971,13 @@
         sources: [
           ['Electron', 'https://github.com/electron/electron', '121,144'],
           ['Tauri', 'https://github.com/tauri-apps/tauri', '106,240']
+        ],
+        recommendations: [
+          ['Electron 官方首页', '官方主张用 JavaScript、HTML、CSS 构建跨平台桌面应用。', 'https://www.electronjs.org/'],
+          ['Why Electron', '说明 Electron 适合把 Web 技术、Node 和原生能力组合成桌面应用。', 'https://www.electronjs.org/docs/latest/why-electron'],
+          ['Tauri 官方首页', 'Tauri 强调小体积、快速、安全，并可用 Web 前端构建跨平台应用。', 'https://tauri.app/'],
+          ['Tauri GitHub 组织', '官方简介强调用 Web 前端构建更小、更快、更安全的桌面和移动应用。', 'https://github.com/tauri-apps'],
+          ['Electron 背景资料', '资料列出 VS Code、GitHub Desktop 等知名桌面应用采用 Electron 生态。', 'https://en.wikipedia.org/wiki/Electron_(software_framework)']
         ]
       }
     ];
@@ -1077,6 +1135,7 @@
           <div class="modal-stat">最近更新<b>${skill.updated}</b></div>
           <div class="modal-stat">状态<b>${skill.activity}</b></div>
         </div>
+        <div class="modal-section one-line"><h3>一句话理解</h3><p style="margin:0">${skill.oneLine}</p></div>
         <div class="modal-section"><h3>主效果</h3><ul><li>${skill.effect}</li></ul></div>
         <div class="modal-section"><h3>适合任务</h3><ul>${skill.use.map(item => `<li>${item}</li>`).join('')}</ul></div>
         <div class="modal-section"><h3>避免误用</h3><ul>${skill.avoid.map(item => `<li>${item}</li>`).join('')}</ul></div>
@@ -1087,6 +1146,10 @@
           <h3>原始来源 / GitHub 链接</h3>
           <div class="source-list">${skill.sources.map(([name, url, star]) => `<a class="source-link" href="${url}" target="_blank" rel="noopener noreferrer"><b>${name}</b><span>${url}</span><em class="source-stars">★ ${star}</em></a>`).join('')}</div>
           <p class="source-note">请以原始仓库的 README、LICENSE 和发布说明为准。本页面只做技能索引与学习路线整理。</p>
+        </div>
+        <div class="modal-section">
+          <h3>大家如何推荐和使用</h3>
+          <div class="recommend-list">${skill.recommendations.map(([name, text, url]) => `<a class="recommend-item" href="${url}" target="_blank" rel="noopener noreferrer"><b>${name}</b><span>${text}</span></a>`).join('')}</div>
         </div>
       `;
       document.getElementById('modalBackdrop').classList.add('open');
