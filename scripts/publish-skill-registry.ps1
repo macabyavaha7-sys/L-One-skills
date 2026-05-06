@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $source = 'E:\L-One知识库\L-One知识库\具体有用的技能库\codex-video-tools-下载1-2026-05-06\07-skill-registry\skill-registry.html'

@@ -605,6 +605,34 @@
       color: #444;
       font-size: 13px;
     }
+    .source-list {
+      display: grid;
+      gap: 8px;
+    }
+    .source-link {
+      display: grid;
+      grid-template-columns: minmax(120px, .35fr) minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      border-radius: 12px;
+      background: var(--soft);
+      padding: 9px 10px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 12px;
+    }
+    .source-link b {
+      font-size: 12px;
+    }
+    .source-link span {
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+    .source-note {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
     .stars {
       color: var(--orange);
       letter-spacing: 1px;
@@ -790,7 +818,11 @@
         use: ['用户有目标但不知道该用什么开源项目。', '用户提供 GitHub 仓库，希望封装为长期可用技能。', '复杂任务需要先规划技能链路。'],
         avoid: ['只是一次性执行且没有复用价值。', '已经有明确命令且无需保存经验。'],
         links: ['video-download-skill', 'format-conversion-factory', '经验回写 Prompt'],
-        quality: ['输出候选项目理由。', '明确主技能和辅助 Prompt。', '不得把多个技能堆进一个文件。']
+        quality: ['输出候选项目理由。', '明确主技能和辅助 Prompt。', '不得把多个技能堆进一个文件。'],
+        sources: [
+          ['Agent Skills specification', 'https://github.com/agentskills/agentskills'],
+          ['OpenAI Skills resource', 'https://academy.openai.com/public/resources/skills']
+        ]
       },
       {
         id: 'video-download-skill',
@@ -809,7 +841,16 @@
         use: ['用户提供视频、播放列表或直播流链接。', '需要字幕、封面、元数据或指定清晰度。', '下载失败需要处理 Cookie、代理或格式选择。'],
         avoid: ['没有下载权限的内容。', '只需要摘要而不是本地文件。'],
         links: ['format-conversion-factory', '视频下载规划 Prompt', '经验回写 Prompt'],
-        quality: ['文件存在且大小合理。', '时长完整。', '清晰度符合要求。', '失败日志可回写。']
+        quality: ['文件存在且大小合理。', '时长完整。', '清晰度符合要求。', '失败日志可回写。'],
+        sources: [
+          ['yt-dlp', 'https://github.com/yt-dlp/yt-dlp'],
+          ['BBDown', 'https://github.com/nilaoda/BBDown'],
+          ['N_m3u8DL-RE', 'https://github.com/nilaoda/N_m3u8DL-RE'],
+          ['Streamlink', 'https://github.com/streamlink/streamlink'],
+          ['MeTube', 'https://github.com/alexta69/metube'],
+          ['Lux', 'https://github.com/iawia002/lux'],
+          ['you-get', 'https://github.com/soimort/you-get']
+        ]
       },
       {
         id: 'format-conversion-factory',
@@ -828,7 +869,13 @@
         use: ['视频转码、压缩、抽音频、抽帧。', '图片批量转换、压缩、缩放。', '音频采样率、声道、格式调整。', '3D 资产格式转换。'],
         avoid: ['目标格式不明确。', '未确认备份就覆盖原文件。'],
         links: ['video-download-skill', 'open-source-to-skill-library', '格式转换工厂 Prompt'],
-        quality: ['先单样本验证。', '批处理要保留失败清单。', '输出文件可打开且格式正确。']
+        quality: ['先单样本验证。', '批处理要保留失败清单。', '输出文件可打开且格式正确。'],
+        sources: [
+          ['FFmpeg', 'https://github.com/FFmpeg/FFmpeg'],
+          ['ImageMagick', 'https://github.com/ImageMagick/ImageMagick'],
+          ['SoX', 'https://github.com/chirlu/sox'],
+          ['Assimp', 'https://github.com/assimp/assimp']
+        ]
       },
       {
         id: 'web-project-to-desktop-app',
@@ -847,7 +894,11 @@
         use: ['Web 项目已经存在，希望做成本地桌面应用。', '需要沉淀 Node、端口、环境变量、构建和打包经验。'],
         avoid: ['只是部署网站。', '需要大量产品重设计或从零重写。'],
         links: ['open-source-to-skill-library', '经验回写 Prompt'],
-        quality: ['Web 本地版本先跑通。', '桌面 App 能启动。', '核心界面非空且主流程可用。']
+        quality: ['Web 本地版本先跑通。', '桌面 App 能启动。', '核心界面非空且主流程可用。'],
+        sources: [
+          ['Electron', 'https://github.com/electron/electron'],
+          ['Tauri', 'https://github.com/tauri-apps/tauri']
+        ]
       }
     ];
 
@@ -1008,6 +1059,11 @@
         <div class="modal-section"><h3>避免误用</h3><ul>${skill.avoid.map(item => `<li>${item}</li>`).join('')}</ul></div>
         <div class="modal-section"><h3>联动技能</h3><ul>${skill.links.map(item => `<li>${item}</li>`).join('')}</ul></div>
         <div class="modal-section"><h3>质量门槛</h3><ul>${skill.quality.map(item => `<li>${item}</li>`).join('')}</ul></div>
+        <div class="modal-section">
+          <h3>原始来源 / GitHub 链接</h3>
+          <div class="source-list">${skill.sources.map(([name, url]) => `<a class="source-link" href="${url}" target="_blank" rel="noopener noreferrer"><b>${name}</b><span>${url}</span></a>`).join('')}</div>
+          <p class="source-note">请以原始仓库的 README、LICENSE 和发布说明为准。本页面只做技能索引与学习路线整理。</p>
+        </div>
       `;
       document.getElementById('modalBackdrop').classList.add('open');
       document.getElementById('closeModal').addEventListener('click', closeModal);
