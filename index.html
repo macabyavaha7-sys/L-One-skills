@@ -620,7 +620,7 @@
     }
     .source-link {
       display: grid;
-      grid-template-columns: minmax(120px, .35fr) minmax(0, 1fr);
+      grid-template-columns: minmax(120px, .32fr) minmax(0, 1fr) auto;
       gap: 10px;
       align-items: center;
       border-radius: 12px;
@@ -636,6 +636,15 @@
     .source-link span {
       color: var(--muted);
       overflow-wrap: anywhere;
+    }
+    .source-stars {
+      border-radius: 999px;
+      background: #fff;
+      padding: 5px 8px;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
     }
     .source-note {
       margin: 10px 0 0;
@@ -818,7 +827,7 @@
         primaryCategory: '分析封装',
         grade: 'S',
         localStars: 5,
-        githubStars: '待同步',
+        githubStars: '17,959',
         updated: '2026-05-06',
         activity: '活跃',
         title: '开源项目封装为技能库',
@@ -830,8 +839,8 @@
         quality: ['输出候选项目理由。', '明确主技能和辅助 Prompt。', '不得把多个技能堆进一个文件。'],
         promptIds: ['01', '02', '04'],
         sources: [
-          ['Agent Skills specification', 'https://github.com/agentskills/agentskills'],
-          ['OpenAI Skills resource', 'https://academy.openai.com/public/resources/skills']
+          ['Agent Skills specification', 'https://github.com/agentskills/agentskills', '17,959'],
+          ['OpenAI Skills resource', 'https://academy.openai.com/public/resources/skills', '官方资源']
         ]
       },
       {
@@ -842,7 +851,7 @@
         primaryCategory: '视频下载',
         grade: 'A',
         localStars: 4,
-        githubStars: '待同步',
+        githubStars: '295,479',
         updated: '2026-05-06',
         activity: '活跃',
         title: '视频下载技能',
@@ -854,13 +863,13 @@
         quality: ['文件存在且大小合理。', '时长完整。', '清晰度符合要求。', '失败日志可回写。'],
         promptIds: ['03', '04'],
         sources: [
-          ['yt-dlp', 'https://github.com/yt-dlp/yt-dlp'],
-          ['BBDown', 'https://github.com/nilaoda/BBDown'],
-          ['N_m3u8DL-RE', 'https://github.com/nilaoda/N_m3u8DL-RE'],
-          ['Streamlink', 'https://github.com/streamlink/streamlink'],
-          ['MeTube', 'https://github.com/alexta69/metube'],
-          ['Lux', 'https://github.com/iawia002/lux'],
-          ['you-get', 'https://github.com/soimort/you-get']
+          ['yt-dlp', 'https://github.com/yt-dlp/yt-dlp', '160,727'],
+          ['BBDown', 'https://github.com/nilaoda/BBDown', '13,822'],
+          ['N_m3u8DL-RE', 'https://github.com/nilaoda/N_m3u8DL-RE', '7,871'],
+          ['Streamlink', 'https://github.com/streamlink/streamlink', '11,443'],
+          ['MeTube', 'https://github.com/alexta69/metube', '13,446'],
+          ['Lux', 'https://github.com/iawia002/lux', '31,318'],
+          ['you-get', 'https://github.com/soimort/you-get', '56,852']
         ]
       },
       {
@@ -871,7 +880,7 @@
         primaryCategory: '格式转换',
         grade: 'A',
         localStars: 4,
-        githubStars: '待同步',
+        githubStars: '89,792',
         updated: '2026-05-06',
         activity: '活跃',
         title: '格式转换工厂',
@@ -883,10 +892,10 @@
         quality: ['先单样本验证。', '批处理要保留失败清单。', '输出文件可打开且格式正确。'],
         promptIds: ['05', '04'],
         sources: [
-          ['FFmpeg', 'https://github.com/FFmpeg/FFmpeg'],
-          ['ImageMagick', 'https://github.com/ImageMagick/ImageMagick'],
-          ['SoX', 'https://github.com/chirlu/sox'],
-          ['Assimp', 'https://github.com/assimp/assimp']
+          ['FFmpeg', 'https://github.com/FFmpeg/FFmpeg', '59,608'],
+          ['ImageMagick', 'https://github.com/ImageMagick/ImageMagick', '16,349'],
+          ['SoX', 'https://github.com/chirlu/sox', '919'],
+          ['Assimp', 'https://github.com/assimp/assimp', '12,916']
         ]
       },
       {
@@ -897,7 +906,7 @@
         primaryCategory: '网页制作',
         grade: 'B+',
         localStars: 4,
-        githubStars: '待同步',
+        githubStars: '227,384',
         updated: '2026-05-06',
         activity: '活跃',
         title: '网页项目封装为桌面 App',
@@ -909,8 +918,8 @@
         quality: ['Web 本地版本先跑通。', '桌面 App 能启动。', '核心界面非空且主流程可用。'],
         promptIds: ['02', '04'],
         sources: [
-          ['Electron', 'https://github.com/electron/electron'],
-          ['Tauri', 'https://github.com/tauri-apps/tauri']
+          ['Electron', 'https://github.com/electron/electron', '121,144'],
+          ['Tauri', 'https://github.com/tauri-apps/tauri', '106,240']
         ]
       }
     ];
@@ -981,7 +990,7 @@
         ['Prompt', prompts.length]
       ].map(([label, value]) => `<div class="hero-metric"><span>${label}</span><b>${value}</b></div>`).join('');
 
-      document.getElementById('repoLine').innerHTML = `${cat.label}：${list.length} 个技能<small>最近更新：2026-05-06 · GitHub 星数待同步</small>`;
+      document.getElementById('repoLine').innerHTML = `${cat.label}：${list.length} 个技能<small>最近更新：2026-05-06 · GitHub 星数已同步</small>`;
       document.getElementById('legend').innerHTML = `
         <span><i></i>发现封装 ${categorySkills('analysis').length}</span>
         <span><i class="green"></i>媒体获取 ${categorySkills('video').length}</span>
@@ -994,7 +1003,7 @@
       const active = list.filter(skill => skill.activity === '活跃').length;
       const maxStars = list.length ? Math.max(...list.map(skill => skill.localStars)) : 0;
       const latest = list.length ? list.map(skill => skill.updated).sort().reverse()[0] : '暂无';
-      const sourceSynced = list.filter(skill => skill.githubStars !== '待同步').length;
+      const sourceSynced = list.filter(skill => skill.githubStars && skill.githubStars !== '0').length;
       document.getElementById('statGrid').innerHTML = `
         <div class="stat-card"><span>总技能数量</span><b>${list.length}</b><div class="bars"><i style="height:22%"></i><i style="height:40%"></i><i class="active" style="height:${Math.max(22, list.length * 18)}%"></i><i style="height:56%"></i><i style="height:34%"></i></div></div>
         <div class="stat-card"><span>活跃技能</span><b>${active}/${list.length || 0}</b><svg class="line-chart" viewBox="0 0 180 60"><path d="M6 42 L34 26 L62 30 L90 18 L118 25 L146 12 L174 20"/></svg></div>
@@ -1076,7 +1085,7 @@
         <div class="modal-section"><h3>质量门槛</h3><ul>${skill.quality.map(item => `<li>${item}</li>`).join('')}</ul></div>
         <div class="modal-section">
           <h3>原始来源 / GitHub 链接</h3>
-          <div class="source-list">${skill.sources.map(([name, url]) => `<a class="source-link" href="${url}" target="_blank" rel="noopener noreferrer"><b>${name}</b><span>${url}</span></a>`).join('')}</div>
+          <div class="source-list">${skill.sources.map(([name, url, star]) => `<a class="source-link" href="${url}" target="_blank" rel="noopener noreferrer"><b>${name}</b><span>${url}</span><em class="source-stars">★ ${star}</em></a>`).join('')}</div>
           <p class="source-note">请以原始仓库的 README、LICENSE 和发布说明为准。本页面只做技能索引与学习路线整理。</p>
         </div>
       `;
